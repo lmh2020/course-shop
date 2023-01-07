@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.system.mapper.CourseOrderMapper">
+
+    <resultMap type="com.company.system.domain.CourseOrder" id="CourseOrderResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="courseId"    column="course_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="gift"    column="gift"    />
+        <result property="price"    column="price"    />
+        <result property="courseName"    column="course_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="address"    column="address"    />
+        <result property="deliverChannel"    column="deliver_channel"    />
+        <result property="deliverNumber"    column="deliver_number"    />
+        <result property="serialNumber"    column="serial_number"    />
+    </resultMap>
+
+    <sql id="selectCourseOrderVo">
+        select o.*, user.nick_name 'user.nickName', user.avatar 'user.avatar'  from course_order o
+        LEFT JOIN sys_user user on user.user_id = o.user_id
+    </sql>
+
+    <select id="selectCourseOrderList" resultMap="CourseOrderResult">
+        <include refid="selectCourseOrderVo"/>
+        <where>
+            <if test="order.address != null  and order.address != ''"> and o.address = #{order.address}</if>
+            <if test="order.deliverChannel != null  and order.deliverChannel != ''"> and o.deliver_channel = #{order.deliverChannel}</if>
+            <if test="order.deliverNumber != null  and order.deliverNumber != ''"> and o.deliver_number = #{order.deliverNumber}</if>
+            <if test="order.isMy != null  and order.isMy != '' and order.isMy == 'TRUE'"> and o.user_id = #{userId}</if>
+        </where>
+    </select>
+
+    <select id="selectCourseOrderById" parameterType="Long" resultMap="CourseOrderResult">
+        <include refid="selectCourseOrderVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCourseOrder" parameterType="com.company.system.domain.CourseOrder">
+        insert into course_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="courseId != null">course_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="gift != null">gift,</if>
+            <if test="price != null">price,</if>
+            <if test="courseName != null">course_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="address != null">address,</if>
+            <if test="deliverChannel != null">deliver_channel,</if>
+            <if test="deliverNumber != null">deliver_number,</if>
+            <if test="serialNumber != null">serial_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="courseId != null">#{courseId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="gift != null">#{gift},</if>
+            <if test="price != null">#{price},</if>
+            <if test="courseName != null">#{courseName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="address != null">#{address},</if>
+            <if test="deliverChannel != null">#{deliverChannel},</if>
+            <if test="deliverNumber != null">#{deliverNumber},</if>
+            <if test="serialNumber != null">#{serialNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCourseOrder" parameterType="com.company.system.domain.CourseOrder">
+        update course_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="courseId != null">course_id = #{courseId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="gift != null">gift = #{gift},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="deliverChannel != null">deliver_channel = #{deliverChannel},</if>
+            <if test="deliverNumber != null">deliver_number = #{deliverNumber},</if>
+            <if test="serialNumber != null">serial_number = #{serialNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCourseOrderById" parameterType="Long">
+        delete from course_order where id = #{id}
+    </delete>
+
+    <delete id="deleteCourseOrderByIds" parameterType="String">
+        delete from course_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

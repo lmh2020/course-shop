@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="page/header :: copy(~{::title}, ~{}, ~{}, ~{})">
+    <title></title>
+  </head>
+
+  <body class="noteplus-layout">
+    <div>
+        <!-- loader Start -->
+        <div th:insert="~{page/loading :: copy}"/>
+        <div class="wrapper">
+            <!-- 左侧个人信息 -->
+            <div th:insert="~{page/sidebar-left :: copy}"/>
+
+            <div class="content-page" id="pageContent">
+            </div>
+        </div>
+
+        <!-- 底部栏 -->
+        <div th:insert="~{page/footer :: copy}"/>
+    </div>
+
+  </body>
+</html>
+
+<script>
+
+</script>

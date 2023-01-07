@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.exam.mapper.EduExamRecordCollectMapper">
+
+    <resultMap id="examCollectRecord" type="com.company.exam.vo.UserExamineRecordVO" autoMapping="true">
+        <id property="examId" column="examId"/>
+        <association property="examineRecord" column="examId" javaType="com.company.exam.vo.UserExamineRecordVO$RecordCollect" autoMapping="true"/>
+        <collection property="recordSections" javaType="java.util.List" ofType="com.company.exam.vo.UserExamineRecordVO$RecordSection" autoMapping="true"/>
+    </resultMap>
+
+    <select id="selectExamRecordCollectList" resultMap="examCollectRecord">
+        SELECT
+            exam.id examId,
+            exam.title,
+            exam.cover_img,
+            exam.total_times,
+            exam.total_score,
+            exam.difficulty_level,
+            exam.state examState,
+            exam.remark examRemark,
+
+            record_collect.id recordCollectId,
+            record_collect.user_id userId,
+            record_collect.enroll_time,
+            record_collect.touch_time,
+            record_collect.finish_time,
+            record_collect.score,
+            record_collect.notice_enable,
+            record_collect.state examRecordState,
+            record_collect.remark examRecordRemark
+        FROM
+            edu_exam exam
+        LEFT JOIN edu_exam_record_collect record_collect ON exam.id = record_collect.exam_id
+        <where>
+            record_collect.user_id = ${@com.company.common.utils.SecurityUtils@getLoginUserId()} AND exam.del_flag = '0'
+            <if test="examTitle != null and examTitle != ''">
+                AND exam.title LIKE CONCAT('%',#{examTitle},'%')
+            </if>
+            <if test="state != null">
+                AND record_collect.state = #{state.code}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectExamineDetail" resultMap="examCollectRecord">
+        SELECT
+            exam.id examId,
+            exam.title,
+            exam.cover_img,
+            exam.total_times,
+            exam.total_score,
+            exam.difficulty_level,
+            exam.state examState,
+            exam.remark examRemark,
+
+            record_collect.id recordCollectId,
+            record_collect.user_id userId,
+            record_collect.enroll_time,
+            record_collect.touch_time,
+            record_collect.finish_time,
+            record_collect.score,
+            record_collect.notice_enable,
+            record_collect.state examRecordState,
+            record_collect.remark examRecordRemark,
+
+            record_section.exam_question_id examQuestionId,
+            record_section.answer userAnswer,
+            record_section.score userScore,
+            record_section.result result
+        FROM
+            edu_exam exam
+        LEFT JOIN edu_exam_record_collect record_collect ON exam.id = record_collect.exam_id
+        LEFT JOIN edu_exam_record_section record_section ON record_collect.id = record_section.record_collect_id
+        WHERE
+            record_collect.id = #{recordCollectId} AND exam.del_flag = '0'
+    </select>
+
+
+
+</mapper>

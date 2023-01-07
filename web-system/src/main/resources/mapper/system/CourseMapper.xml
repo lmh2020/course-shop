@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.system.mapper.CourseMapper">
+
+    <resultMap type="Course" id="CourseResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="examId"    column="exam_id"    />
+        <result property="linkUrl"    column="link_url"    />
+        <result property="name"    column="name"    />
+        <result property="title"    column="title"    />
+        <result property="img"    column="img"    />
+        <result property="detail"    column="detail"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="price"    column="price"    />
+        <result property="sales"    column="sales"    />
+        <result property="views"    column="views"    />
+        <result property="gift"    column="gift"    />
+    </resultMap>
+
+    <sql id="selectCourseVo">
+        select course.*, user.nick_name 'user.nickName', user.avatar 'user.avatar', user.email 'user.email',
+        o.gift 'order.gift', o.price 'order.price',o.create_time 'order.createTime',o.address 'order.address',o.deliver_channel 'order.deliverChannel',
+        o.deliver_number 'order.deliverNumber',o.serial_number 'order.serialNumber', o.user_id 'order.userId'
+        from course course
+        LEFT JOIN sys_user user on course.user_id = user.user_id
+        LEFT JOIN course_order o ON o.course_id = course.id AND o.user_id = #{userId}
+    </sql>
+
+    <select id="selectCourseList" parameterType="Course" resultMap="CourseResult">
+        <include refid="selectCourseVo"/>
+        <where>
+            <if test="course.name != null  and course.name != ''"> and course.name like concat('%', #{course.name}, '%')</if>
+            <if test="course.title != null  and course.title != ''"> and course.title = #{course.title}</if>
+            <if test="course.isMy != null  and course.isMy != '' and course.isMy == 'TRUE'"> and course.user_id = #{userId}</if>
+            <if test="course.buyed != null  and course.buyed != '' and course.buyed == 'TRUE'"> and o.user_id = #{userId}</if>
+        </where>
+        ORDER BY course.create_time DESC
+    </select>
+
+    <select id="selectCourseById" parameterType="Long" resultMap="CourseResult">
+        <include refid="selectCourseVo"/>
+        where course.id = #{id}
+    </select>
+
+    <insert id="insertCourse" parameterType="Course" useGeneratedKeys="true" keyProperty="id">
+        insert into course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="examId != null">exam_id,</if>
+            <if test="linkUrl != null and linkUrl != ''">link_url,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="title != null">title,</if>
+            <if test="img != null">img,</if>
+            <if test="detail != null">detail,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="price != null">price,</if>
+            <if test="sales != null">sales,</if>
+            <if test="views != null">views,</if>
+            <if test="gift != null and gift != ''">gift,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="examId != null">#{examId},</if>
+            <if test="linkUrl != null and linkUrl != ''">#{linkUrl},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="title != null">#{title},</if>
+            <if test="img != null">#{img},</if>
+            <if test="detail != null">#{detail},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="price != null">#{price},</if>
+            <if test="sales != null">#{sales},</if>
+            <if test="views != null">#{views},</if>
+            <if test="gift != null and gift != ''">#{gift},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCourse" parameterType="Course">
+        update course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="examId != null">exam_id = #{examId},</if>
+            <if test="linkUrl != null and linkUrl != ''">link_url = #{linkUrl},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="detail != null">detail = #{detail},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="sales != null">sales = #{sales},</if>
+            <if test="views != null">sales = #{views},</if>
+            <if test="gift != null and gift != ''">gift = #{gift},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCourseById" parameterType="Long">
+        delete from course where id = #{id}
+    </delete>
+
+    <delete id="deleteCourseByIds" parameterType="String">
+        delete from course where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

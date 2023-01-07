@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="page/header :: copy(~{::title}, ~{}, ~{}, ~{})">
+    <title>课程详情</title>
+  </head>
+
+  <body class="noteplus-layout">
+    <div>
+        <!-- loader Start -->
+        <div th:insert="~{page/loading :: copy}"/>
+        <div class="wrapper">
+            <!-- 左侧个人信息 -->
+            <div th:insert="~{page/sidebar-left :: copy}"/>
+
+            <div class="content-page" id="pageContent">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card car-transparent">
+                                <div class="card-header d-flex justify-content-between pb-1">
+                                    <button @click="http.go('pricing', {courseId: course.id})" :disabled="course.order || user.userId == course.userId" type="button" class="btn btn-success rounded-pill"><i class="ri-bill-fill"></i>{{course.order || user.userId == course.userId ? '已购买' : '去购买'}}</button>
+                                    <button @click="showVideoDialog()" type="button" class="btn btn-danger rounded-pill"><i class="ri-heart-fill"></i>观看视频</button>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="profile-image position-relative" style="overflow-y: auto;height: 400px;">
+                                        <img :src="course.img" class="img-fluid rounded w-100" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="card card-block card-stretch card-height">
+                                <div class="card-body">
+                                    <h4 class="mb-3">{{course.name}}</h4>
+                                    <p class="mb-0 text-ellipsis short-4">{{course.title}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-block card-stretch card-height">
+                                <div class="card-body text-center">
+                                    <svg width="36" height="48" viewBox="0 0 36 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9.10495 33.9964C8.29026 33.1817 8.71495 33.4114 6.74995 32.8855C5.85838 32.6464 5.07463 32.1871 4.36588 31.6367L0.112441 42.0655C-0.299122 43.0752 0.469629 44.1721 1.559 44.1308L6.4987 43.9424L9.8962 47.5311C10.6462 48.3224 11.9624 48.0758 12.374 47.0661L17.2537 35.1017C16.2375 35.668 15.1096 35.9999 13.9434 35.9999C12.1153 35.9999 10.3978 35.2883 9.10495 33.9964V33.9964ZM35.8875 42.0655L31.634 31.6367C30.9253 32.188 30.1415 32.6464 29.25 32.8855C27.2746 33.4142 27.7078 33.1836 26.895 33.9964C25.6021 35.2883 23.8837 35.9999 22.0556 35.9999C20.8893 35.9999 19.7615 35.6671 18.7453 35.1017L23.625 47.0661C24.0365 48.0758 25.3537 48.3224 26.1028 47.5311L29.5012 43.9424L34.4409 44.1308C35.5303 44.1721 36.299 43.0742 35.8875 42.0655V42.0655ZM24.6562 31.8749C26.0887 30.4171 26.2528 30.5427 28.2928 29.9867C29.595 29.6314 30.6131 28.5955 30.9618 27.2699C31.6631 24.6074 31.4812 24.9289 33.3946 22.9808C34.3481 22.0105 34.7203 20.5958 34.3715 19.2702C33.6712 16.6096 33.6703 16.9808 34.3715 14.3174C34.7203 12.9917 34.3481 11.5771 33.3946 10.6067C31.4812 8.65862 31.6631 8.97925 30.9618 6.31768C30.6131 4.99206 29.595 3.95612 28.2928 3.60081C25.679 2.88737 25.994 3.07393 24.0787 1.12487C23.1253 0.154558 21.735 -0.225129 20.4328 0.130183C17.82 0.842683 18.1846 0.843621 15.5671 0.130183C14.2649 -0.225129 12.8746 0.153621 11.9212 1.12487C10.0078 3.073 10.3228 2.88737 7.70807 3.60081C6.40588 3.95612 5.38776 4.99206 5.03901 6.31768C4.33869 8.97925 4.51963 8.65862 2.60619 10.6067C1.65275 11.5771 1.27963 12.9917 1.62932 14.3174C2.32963 16.9761 2.33057 16.6049 1.62932 19.2692C1.28057 20.5949 1.65275 22.0096 2.60619 22.9808C4.51963 24.9289 4.33776 24.6074 5.03901 27.2699C5.38776 28.5955 6.40588 29.6314 7.70807 29.9867C9.8062 30.5586 9.96276 30.4686 11.3437 31.8749C12.584 33.1377 14.5162 33.3636 16.0068 32.4205C16.6029 32.0421 17.2944 31.8411 18.0004 31.8411C18.7065 31.8411 19.3979 32.0421 19.994 32.4205C21.4837 33.3636 23.4159 33.1377 24.6562 31.8749ZM9.15557 16.4961C9.15557 11.5246 13.1156 7.49425 18 7.49425C22.8843 7.49425 26.8443 11.5246 26.8443 16.4961C26.8443 21.4677 22.8843 25.498 18 25.498C13.1156 25.498 9.15557 21.4677 9.15557 16.4961V16.4961Z" fill="#88DFFF" />
+                                    </svg>
+                                    <h2 class="mb-2 mt-3">{{course.sales}}</h2>
+                                    <h4>销量</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-block card-stretch card-height">
+                                <div class="card-body text-center">
+                                    <svg width="60" height="48" viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M23.9091 24.5297C24.495 25.1156 25.4447 25.1156 26.0306 24.5297L27.0909 23.4694C27.6769 22.8834 27.6769 21.9338 27.0909 21.3478L23.7422 18L27.09 14.6512C27.6759 14.0653 27.6759 13.1156 27.09 12.5297L26.0297 11.4694C25.4437 10.8834 24.4941 10.8834 23.9081 11.4694L18.4387 16.9387C17.8528 17.5247 17.8528 18.4744 18.4387 19.0603L23.9091 24.5297V24.5297ZM32.91 23.4703L33.9703 24.5306C34.5563 25.1166 35.5059 25.1166 36.0919 24.5306L41.5613 19.0613C42.1472 18.4753 42.1472 17.5256 41.5613 16.9397L36.0919 11.4703C35.5059 10.8844 34.5563 10.8844 33.9703 11.4703L32.91 12.5306C32.3241 13.1166 32.3241 14.0662 32.91 14.6522L36.2578 18L32.91 21.3488C32.3241 21.9347 32.3241 22.8844 32.91 23.4703V23.4703ZM58.5 39H35.7694C35.7 40.8572 34.3903 42 32.7 42H27C25.2478 42 23.9044 40.3622 23.9278 39H1.5C0.675 39 0 39.675 0 40.5V42C0 45.3 2.7 48 6 48H54C57.3 48 60 45.3 60 42V40.5C60 39.675 59.325 39 58.5 39ZM54 4.5C54 2.025 51.975 0 49.5 0H10.5C8.025 0 6 2.025 6 4.5V36H54V4.5ZM48 30H12V6H48V30Z" fill="#81F4B2" />
+                                    </svg>
+                                    <h2 class="mb-2 mt-3">{{course.views}}</h2>
+                                    <h4>访问量</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-6">
+                            <div class="card card-block card-stretch card-height">
+                                <div class="card-header">
+                                    <div class="header-title">
+                                        <h4 class="card-title">赠送礼物</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-inline p-0 m-0">
+                                        <li v-for="item in course.gift" class="d-flex align-items-center mb-3">
+                                            <div class="profile-icon iq-icon-box rounded-small bg-info-light text-center">
+                                                <svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M17.1107 17.1746L12 22.2853L6.88929 17.1746C3.05893 17.3406 0 20.4746 0 24.3424V24.8567C0 26.2764 1.15179 27.4281 2.57143 27.4281H21.4286C22.8482 27.4281 24 26.2764 24 24.8567V24.3424C24 20.4746 20.9411 17.3406 17.1107 17.1746ZM0.728571 4.27457L1.07143 4.35493V7.4835C0.696429 7.7085 0.428571 8.09957 0.428571 8.571C0.428571 9.021 0.675 9.396 1.02321 9.62636L0.1875 12.9639C0.0964286 13.3335 0.3 13.7139 0.594643 13.7139H2.83393C3.12857 13.7139 3.33214 13.3335 3.24107 12.9639L2.40536 9.62636C2.75357 9.396 3 9.021 3 8.571C3 8.09957 2.73214 7.7085 2.35714 7.4835V4.66564L5.89286 5.51743C5.43214 6.43886 5.14286 7.46743 5.14286 8.571C5.14286 12.3585 8.2125 15.4281 12 15.4281C15.7875 15.4281 18.8571 12.3585 18.8571 8.571C18.8571 7.46743 18.5732 6.43886 18.1071 5.51743L23.2661 4.27457C24.2411 4.03886 24.2411 2.82278 23.2661 2.58707L13.0661 0.122784C12.3696 -0.0432879 11.6357 -0.0432879 10.9393 0.122784L0.728571 2.58171C-0.241071 2.81743 -0.241071 4.03886 0.728571 4.27457Z" fill="#88DFFF" />
+                                                </svg>
+                                            </div>
+                                            <div class="pl-3">
+                                                <h5>{{item}}</h5>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-md-6">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="card card-block card-stretch card-height">
+                                        <div class="card-header">
+                                            <div class="header-title">
+                                                <h4 class="card-title">基本信息</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-inline p-0 mb-0">
+                                                <li>
+                                                    <div class="d-flex align-items-center justify-content-between row">
+                                                        <div class="col-10">
+                                                            <div class="d-flex align-items-center">
+                                                                <p class="mb-0 font-size-16 mr-3">编号</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="percentage float-right text-success font-weight-bold">{{course.id}}</div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex align-items-center justify-content-between mb-3 row">
+                                                        <div class="col-10">
+                                                            <div class="d-flex align-items-center">
+                                                                <p class="mb-0 font-size-16 mr-3">单价</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="percentage float-right text-danger font-weight-bold">{{course.price}} 元</div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex align-items-center justify-content-between mb-3 row">
+                                                        <div class="col-4">
+                                                            <div class="d-flex align-items-center">
+                                                                <p class="mb-0 font-size-16 mr-3">发布时间</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <div class="percentage float-right text-primary font-weight-bold">{{course.createTime}}</div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="card card-block card-stretch card-height">
+                                        <div class="card-header">
+                                            <div class="header-title">
+                                                <h4 class="card-title">发布人信息</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-inline p-0 m-0">
+                                                <li class="mb-3 d-flex">
+                                                    <span><i class="lab la-facebook-f text-primary font-size-20 mr-3"></i></span>
+                                                    <p class="mb-0 font-size-16 line-height">{{course.user.nickName}}</p>
+                                                </li>
+                                                <li class="mb-3 d-flex">
+                                                    <span><i class="lab la-twitter text-info font-size-20 mr-3"></i></span>
+                                                    <p class="mb-0 font-size-16 line-height">{{course.user.email}}</p>
+                                                </li>
+                                                <li class=" d-flex">
+                                                    <span><i class="lab la-instagram  text-danger font-size-20 mr-3"></i></span>
+                                                    <img class="avatar-50 rounded-small" :src="course.user.avatar" alt="02">
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="card card-block card-stretch card-height">
+                                        <div class="card-header">
+                                            <div class="header-title">
+                                                <h4 class="card-title">详细介绍</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">{{course.detail}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 观看视频弹窗 -->
+                <div class="modal fade" id="watchVideoDialog" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="popup text-left">
+                                    <div class="media align-items-top justify-content-between">
+                                        <h3 class="mb-3">课程学习</h3>
+                                        <div class="btn-cancel p-0" data-dismiss="modal"><i class="las la-times"></i></div>
+                                    </div>
+                                    <div class="content create-workform">
+                                        <video :src="course.linkUrl" controls autoplay="false" style="width: 100%;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 底部栏 -->
+        <div th:insert="~{page/footer :: copy}"/>
+
+        <script>
+            new Vue({
+                el: '#pageContent',
+                data: {
+                    user: http.getUser(),
+                    course: {
+                        gift: [],
+                        user: {}
+                    }
+                },
+                created() {
+                    this.getCourse()
+                },
+                methods: {
+                    getCourse(){
+                        const _this = this
+                        http.get(`/system/course/${[[${courseId}]]}`, null, function (data) {
+                            _this.course = data
+                            if(_this.course.gift){
+                                _this.course.gift = _this.course.gift.split(",")
+                            } else {
+                                _this.course.gift = []
+                            }
+                            _this.updateViews()
+                        })
+                    },
+
+                    showVideoDialog(){
+                        const _this = this
+                        if (!_this.course.order && _this.user.userId != _this.course.userId){
+                            return Swal.fire({title: '提示', text: "请先购买该课程", icon: 'warning'}).then((e) => {
+                                if(e.isConfirmed){
+                                    http.go('pricing', {courseId: _this.course.id})
+                                }
+                            })
+                        }
+                        $('#watchVideoDialog').modal('show')
+                    },
+
+                    async updateViews(){
+                        const _this = this
+                        http.get('/system/course/views?courseId=' + _this.course.id, null, function (data) {
+
+                        })
+                    },
+                }
+            })
+        </script>
+
+    </div>
+
+  </body>
+</html>

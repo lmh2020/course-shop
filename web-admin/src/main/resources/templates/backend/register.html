@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../static/assets/images/favicon.ico" />
+
+    <link rel="stylesheet" href="../static/assets/css/backend.min.css?v=1.0.0">
+    <link rel="stylesheet" href="../static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../static/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
+    <link rel="stylesheet" href="../static/assets/vendor/remixicon/fonts/remixicon.css">
+    <link rel="stylesheet" href="../static/assets/vendor/@icon/dripicons/dripicons.css">
+
+    <link rel='stylesheet' href='../static/assets/vendor/fullcalendar/core/main.css' />
+    <link rel='stylesheet' href='../static/assets/vendor/fullcalendar/daygrid/main.css' />
+    <link rel='stylesheet' href='../static/assets/vendor/fullcalendar/timegrid/main.css' />
+    <link rel='stylesheet' href='../static/assets/vendor/fullcalendar/list/main.css' />
+    <link rel="stylesheet" href="../static/assets/vendor/mapbox/mapbox-gl.css">  </head>
+<body class=" ">
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+<!-- loader END -->
+
+<div class="wrapper">
+    <section class="login-content">
+        <div class="container h-100">
+            <div class="row justify-content-center align-items-center height-self-center">
+                <div class="col-md-5 col-sm-12 col-12 align-self-center">
+                    <div class="sign-user_card">
+                        <div class="logo-detail">
+                            <div class="d-flex align-items-center"><img src="../static/assets/images/logo.jpg" class="img-fluid rounded-normal light-logo logo" alt="logo"></div>
+                        </div>
+                        <h3 class="mb-2">在线课程</h3>
+                        <p>创建您的账号</p>
+                        <div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="floating-label form-group">
+                                        <input class="floating-input form-control" id="userName" type="text" placeholder=" ">
+                                        <label>登录账号</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="floating-label form-group">
+                                        <input class="floating-input form-control" id="nickName" type="text" placeholder=" ">
+                                        <label>用户昵称</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="floating-label form-group">
+                                        <input class="floating-input form-control" id="phonenumber" type="text" placeholder=" ">
+                                        <label>手机号码</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="floating-label form-group">
+                                        <input class="floating-input form-control" id="password" type="password" placeholder=" ">
+                                        <label>密码</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="floating-label form-group">
+                                        <input class="floating-input form-control" id="repassword" type="password" placeholder=" ">
+                                        <label>确认密码</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="submit" class="btn btn-primary">提交信息</button>
+                            <p class="mt-3 mb-0">
+                                我已经有账号？ <a href="/front/loginPage" class="text-primary"><b>直接登录</b></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Backend Bundle JavaScript -->
+<script src="../static/assets/js/backend-bundle.min.js"></script>
+
+<!-- Flextree Javascript-->
+<script src="../static/assets/js/flex-tree.min.js"></script>
+<script src="../static/assets/js/tree.js"></script>
+
+<!-- Table Treeview JavaScript -->
+<script src="../static/assets/js/table-treeview.js"></script>
+
+<!-- Masonary Gallery Javascript -->
+<script src="../static/assets/js/masonry.pkgd.min.js"></script>
+<script src="../static/assets/js/imagesloaded.pkgd.min.js"></script>
+
+<!-- Mapbox Javascript -->
+<script src="../static/assets/js/mapbox-gl.js"></script>
+<script src="../static/assets/js/mapbox.js"></script>
+
+<!-- Fullcalender Javascript -->
+<script src='../static/assets/vendor/fullcalendar/core/main.js'></script>
+<script src='../static/assets/vendor/fullcalendar/daygrid/main.js'></script>
+<script src='../static/assets/vendor/fullcalendar/timegrid/main.js'></script>
+<script src='../static/assets/vendor/fullcalendar/list/main.js'></script>
+
+<!-- SweetAlert JavaScript -->
+<script src="../static/assets/js/sweetalert.js"></script>
+
+<!-- Vectoe Map JavaScript -->
+<script src="../static/assets/js/vector-map-custom.js"></script>
+
+<!-- Chart Custom JavaScript -->
+<script src="../static/assets/js/customizer.js"></script>
+
+<!-- Chart Custom JavaScript -->
+<script src="../static/assets/js/chart-custom.js"></script>
+
+<!-- slider JavaScript -->
+<script src="../static/assets/js/slider.js"></script>
+
+<!-- app JavaScript -->
+<script src="../static/assets/js/app.js"></script>
+<script src="../static/assets/js/common.js"></script>
+
+</body>
+</html>
+
+<script type="application/javascript">
+
+    $(function (){
+        $("#name").val("ry")
+        $("#password").val("123456")
+    })
+
+    $("#submit").click(function(){
+        const userName = $("#userName").val()
+        const nickName = $("#nickName").val()
+        const phonenumber = $("#phonenumber").val()
+        const password = $("#password").val()
+        const repassword = $("#repassword").val()
+        if (!userName){
+            return Swal.fire({title: '提示', text: "请输入登录账号", icon: 'warning'})
+        }
+        if (!nickName){
+            return Swal.fire({title: '提示', text: "请输入用户昵称", icon: 'warning'})
+        }
+        if (!phonenumber){
+            return Swal.fire({title: '提示', text: "请输入手机号", icon: 'warning'})
+        } else if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(phonenumber)){
+            return Swal.fire({title: '提示', text: "手机号格式不正确", icon: 'warning'})
+        }
+        if (!password){
+            return Swal.fire({title: '提示', text: "请输入密码", icon: 'warning'})
+        }
+        if (!repassword){
+            return Swal.fire({title: '提示', text: "请再次输入密码", icon: 'warning'})
+        }
+        if (password != repassword){
+            return Swal.fire({title: '提示', text: "两次密码不一致", icon: 'warning'})
+        }
+        http.post("/system/user/register", {
+            userName: userName,
+            nickName: nickName,
+            phonenumber: phonenumber,
+            password: password
+        }, function (res){
+            Swal.fire({title: '注册成功！现在去登录？', icon: 'success', showConfirmButton: true}).then((e) => {
+                if(e.isConfirmed){
+                    window.location.href = '/front/loginPage'
+                }
+            })
+        })
+
+    })
+
+</script>

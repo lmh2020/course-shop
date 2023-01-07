@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="copy">
+        <div class="iq-sidebar  sidebar-default" id="sidebarLeft">
+            <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
+                <a @click="http.go('index')" class="header-logo" style="cursor: pointer;">
+                    <img src="../static/assets/images/logo.jpg" class="img-fluid rounded-normal light-logo" alt="logo"> <h4 class="logo-title ml-3">在线课程</h4>
+                </a>
+                <div class="iq-menu-bt-sidebar">
+                    <i class="las la-times wrapper-menu"></i>
+                </div>
+            </div>
+            <div class="sidebar-caption dropdown">
+                <a href="#" class="iq-user-toggle d-flex align-items-center justify-content-between" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img :src="user.avatar" class="img-fluid rounded avatar-50 mr-3" alt="user">
+                    <div class="caption">
+                        <h6 class="mb-0 line-height">{{user.nickName}}</h6>
+                    </div>
+                    <i class="las la-angle-down"></i>
+                </a>
+                <div class="dropdown-menu w-100 border-0 my-2" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item mb-2" @click="http.go('user-info')">
+                        <i class="las la-user-edit font-size-20 mr-1"></i>
+                        <span>个人信息</span>
+                    </a>
+                    <a class="dropdown-item mb-2" @click="http.go('password-reset')">
+                        <i class="las la-user-cog font-size-20 mr-1"></i>
+                        <span>修改密码</span>
+                    </a>
+                    <hr class="my-2">
+                    <a class="dropdown-item" @click="() => {http.clearToken();http.clearUser();window.location.href = '/front/loginPage'}">
+                        <i class="las la-sign-out-alt font-size-20 mr-1"></i>
+                        <span>退出登录</span>
+                    </a>
+                </div>
+            </div>
+            <!-- 左侧菜单 -->
+            <div class="data-scrollbar" data-scroll="1">
+                <nav class="iq-sidebar-menu">
+                    <ul id="iq-sidebar-toggle" class="iq-menu">
+                        <li class="active" style="cursor: pointer;">
+                            <a @click="http.go('index')" class="svg-icon">
+                                <i>
+                                    <svg class="svg-icon" id="iq-main-1" width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                                    </svg>
+                                </i>
+                                <span>在线课程</span>
+                            </a>
+                            <ul id="index" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle"></ul>
+                        </li>
+                        <li style="cursor: pointer;">
+                            <a @click="http.go('course-order')" class="svg-icon">
+                                <i>
+                                    <svg class="svg-icon" id="iq-ui-1-8" width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" style="stroke-dasharray: 79, 99; stroke-dashoffset: 0;"></path>                                    </svg>
+                                </i>
+                                <span>课程订单</span>
+                            </a>
+                            <ul class="iq-submenu collapse" data-parent="#iq-sidebar-toggle"></ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <script>
+            new Vue({
+                el: '#sidebarLeft',
+                data: {
+                    user: http.getUser(),
+                },
+            })
+        </script>
+
+    </div>
+</html>
+

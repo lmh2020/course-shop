@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.exam.mapper.EduPaperStoreMapper">
+
+    <select id="selectPaperQuestionList" resultType="com.company.exam.domain.EduQuestionStore">
+        SELECT
+            store.*, pq.next_question_id nextQuestionId
+        FROM
+            edu_paper_question pq
+        LEFT JOIN edu_question_store store ON pq.exam_question_store_id = store.id
+        WHERE
+            pq.paper_id = #{paperId} AND store.del_flag = '0'
+        <if test="questionCategoryCode != null and questionCategoryCode != ''">
+            AND store.question_category_code = #{questionCategoryCode}
+        </if>
+        <if test="question != null and question != ''">
+            AND store.question LIKE CONCAT('%', #{question}, '%')
+        </if>
+        <if test="questionType != null and questionType != ''">
+            AND store.question_type = #{questionType}
+        </if>
+        <if test="difficultyLevel != null">
+            AND store.difficulty_level = #{difficultyLevel}
+        </if>
+    </select>
+
+    <!-- 依据【试卷】查询题库试题 -->
+    <select id="selectStoreQuestionForPaper" resultType="com.company.exam.domain.EduQuestionStore">
+        SELECT
+            IF( pq.id IS NULL, 'N', 'Y' ) added,
+            store.*
+        FROM
+            edu_question_store store
+        LEFT JOIN edu_paper_question pq ON pq.exam_question_store_id = store.id AND pq.paper_id = #{paperId}
+        WHERE
+            store.del_flag = '0'
+        <choose>
+            <when test='added == "Y"'>
+                AND pq.id IS NOT NULL
+            </when>
+            <when test='added == "N"'>
+                AND pq.id IS NULL
+            </when>
+        </choose>
+        <if test="questionCategoryCode != null and questionCategoryCode != ''">
+            AND store.question_category_code = #{questionCategoryCode}
+        </if>
+        <if test="question != null and question != ''">
+            AND store.question LIKE CONCAT('%', #{question}, '%')
+        </if>
+        <if test="questionType != null and questionType != ''">
+            AND store.question_type = #{questionType}
+        </if>
+        <if test="difficultyLevel != null">
+            AND store.difficulty_level = #{difficultyLevel}
+        </if>
+        <if test="score != null">
+            AND store.score = #{score}
+        </if>
+    </select>
+
+    <!-- 依据【考核】查询题库试题 -->
+    <select id="selectStoreQuestionForExam" resultType="com.company.exam.domain.EduQuestionStore">
+        SELECT
+            IF( exam_question.id IS NULL, 'N', 'Y' ) added,
+            store.*
+        FROM
+            edu_question_store store
+        LEFT JOIN edu_exam_question exam_question ON exam_question.question_store_id = store.id AND exam_question.exam_id = #{examId}
+        WHERE
+            store.del_flag = '0'
+        <choose>
+            <when test='added == "Y"'>
+                AND exam_question.id IS NOT NULL
+            </when>
+            <when test='added == "N"'>
+                AND exam_question.id IS NULL
+            </when>
+        </choose>
+        <if test="questionCategoryCode != null and questionCategoryCode != ''">
+            AND store.question_category_code = #{questionCategoryCode}
+        </if>
+        <if test="question != null and question != ''">
+            AND store.question LIKE CONCAT('%', #{question}, '%')
+        </if>
+        <if test="questionType != null and questionType != ''">
+            AND store.question_type = #{questionType}
+        </if>
+        <if test="difficultyLevel != null">
+            AND store.difficulty_level = #{difficultyLevel}
+        </if>
+        <if test="score != null">
+            AND store.score = #{score}
+        </if>
+    </select>
+
+    <delete id="batchRemovePaperQuestion">
+        DELETE FROM edu_paper_question WHERE paper_id = #{paperId} AND exam_question_store_id IN
+        <foreach item="id" collection="storeQuestionIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    <insert id="batchImportQuestion">-->
+<!--        INSERT INTO edu_paper_question (paper_id, exam_question_store_id)-->
+<!--        VALUES-->
+<!--        <foreach collection="storeQuestionIds" item="storeQuestionId" separator=",">-->
+<!--            (#{paperId}, #{storeQuestionId})-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+    <select id="getLastPaperQuestionByQuestionType" resultType="com.company.exam.domain.EduQuestionStore">
+        SELECT
+            store.*
+        FROM
+            edu_paper_question pq
+        LEFT JOIN edu_question_store store ON pq.exam_question_store_id = store.id AND store.del_flag = '0'
+        WHERE
+            pq.paper_id = #{paperId} AND store.question_type = #{questionType} AND pq.next_question_id IS NULL LIMIT 1
+    </select>
+
+    <select id="updateLastPaperQuestion">
+        UPDATE
+            edu_paper_question pq
+        LEFT JOIN edu_question_store store ON pq.exam_question_store_id = store.id AND store.del_flag = '0'
+        SET pq.next_question_id = #{nextQuestionId}
+        WHERE
+            pq.paper_id = #{paperId} AND store.question_type = #{questionType} AND pq.next_question_id IS NULL
+    </select>
+
+    <insert id="batchImportQuestion">
+        INSERT INTO edu_paper_question (paper_id, exam_question_store_id, next_question_id, exam_question_type)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.paperId}, #{item.examQuestionStoreId}, #{item.nextQuestionId}, #{item.examQuestionType})
+        </foreach>
+    </insert>
+
+    <update id="updatePaperQuestionNextId">
+        UPDATE edu_paper_question pq
+        SET pq.next_question_id = #{newNextId}
+        WHERE pq.paper_id = #{paperId} AND pq.exam_question_store_id = #{storeQuestionId}
+    </update>
+
+    <select id="selectPaperQuestion" resultType="com.company.exam.domain.EduQuestionStore">
+        SELECT
+            store.*, pq.next_question_id nextQuestionId
+        FROM
+            edu_paper_question pq
+        LEFT JOIN edu_question_store store ON pq.exam_question_store_id = store.id AND store.del_flag = '0'
+        WHERE
+            paper_id = #{paperId} AND pq.exam_question_store_id = #{storeQuestionId} LIMIT 1
+    </select>
+
+    <select id="statisticsPaperQuestionPartCount" resultType="com.company.exam.vo.PaperQuestionStatisticsVO$QuestionPart">
+        SELECT
+            pq.exam_question_type questionType,
+--             dict.dict_label,
+            sum( store.score ) questionScore,
+            count( 1 ) questionCount
+        FROM
+            edu_paper_question pq
+                JOIN edu_question_store store ON pq.exam_question_store_id = store.id and store.del_flag = '0'
+--                 JOIN sys_dict_data dict ON pq.exam_question_type = dict.dict_value AND dict.dict_type = 'edu_exam_question_type' AND dict.del_flag = '0'
+        WHERE pq.paper_id = #{paperId}
+        GROUP BY
+            pq.exam_question_type
+    </select>
+
+</mapper>

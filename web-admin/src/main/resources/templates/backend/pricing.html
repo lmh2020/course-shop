@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="page/header :: copy(~{::title}, ~{}, ~{}, ~{})">
+    <title></title>
+  </head>
+
+  <body class="noteplus-layout">
+    <div>
+        <!-- loader Start -->
+        <div th:insert="~{page/loading :: copy}"/>
+        <div class="wrapper">
+            <!-- 左侧个人信息 -->
+            <div th:insert="~{page/sidebar-left :: copy}"/>
+
+            <div class="content-page" id="pageContent">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive pricing pt-2">
+                                        <table id="my-table" class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center prc-wrap"></th>
+                                                    <th class="text-center prc-wrap">
+                                                        <div class="prc-box active" style="background: #4caf50;">
+                                                            <div class="h3 pt-4">{{course.price}}<small> / 永久</small>
+                                                            </div><span class="type">课程售价</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th class="text-center" scope="row">课程名称</th>
+                                                    <td class="text-center child-cell active">{{course.name}}<i class="text-center child-cell active"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">课程标题</th>
+                                                    <td class="text-center child-cell active">{{course.title}}<i class="text-center child-cell active"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">课程说明</th>
+                                                    <td class="text-center child-cell active">{{course.detail}}<i class="text-center child-cell active"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">课程售价</th>
+                                                    <td class="text-center child-cell active">¥ {{course.price}} 元<i class="text-center child-cell active"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">赠送礼物</th>
+                                                    <td class="text-center child-cell">
+                                                        <div v-for="(gift, i) in course.gift" class="custom-radio custom-control-inline" style="margin-left: 25px;">
+                                                            <input v-model="form.gift" type="radio" :value="gift" :id="'giftRadio' + i" class="custom-control-input">
+                                                            <label class="custom-control-label" :for="'giftRadio' + i">{{gift}}</label>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" scope="row">配送地址</th>
+                                                    <td class="text-center child-cell active">
+                                                        <input v-model="form.address" type="text" class="form-control">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"></td>
+                                                    <td class="text-center"><button @click="buy" type="button" class="btn btn-success rounded-pill"><i class="ri-bill-fill"></i>购买</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 底部栏 -->
+        <div th:insert="~{page/footer :: copy}"/>
+
+        <script>
+            new Vue({
+                el: '#pageContent',
+                data: {
+                    user: http.getUser(),
+                    course: {
+                        gift: [],
+                        user: {}
+                    },
+                    form: {
+                        gift: null
+                    }
+                },
+                created() {
+                    this.getCourse()
+                },
+                methods: {
+                    getCourse(){
+                        const _this = this
+                        http.get(`/system/course/${[[${courseId}]]}`, null, function (data) {
+                            _this.course = data
+                            if(_this.course.gift){
+                                _this.course.gift = _this.course.gift.split(",")
+                            } else {
+                                _this.course.gift = []
+                            }
+                        })
+                    },
+
+                    buy(){
+                        const _this = this
+                        if (_this.user.userId == _this.course.userId){
+                            return Swal.fire({title: '提示', text: "您的课程无需再购买", icon: 'warning'})
+                        }
+                        if (_this.course.order) {
+                            return Swal.fire({title: '提示', text: "您已购买成功，请勿重复操作", icon: 'warning'})
+                        }
+                        if (!_this.form.gift){
+                            return Swal.fire({title: '提示', text: "请选择赠送的礼物", icon: 'warning'})
+                        }
+                        if (!_this.form.address){
+                            return Swal.fire({title: '提示', text: "请输入礼物配送地址", icon: 'warning'})
+                        }
+                        return Swal.fire({title: '提示', text: `是否确定支付[${_this.course.price}元]永久购买该课程`, icon: 'warning'}).then((e) => {
+                            if(e.isConfirmed){
+                                http.post('/system/order', {
+                                    courseId: _this.course.id,
+                                    gift: _this.form.gift,
+                                    address: _this.form.address,
+                                }, function (data) {
+                                    Swal.fire({title: '提示', text: "购买成功！即将自动返回", icon: 'success'})
+                                    setTimeout(() => {
+                                        http.go('course-info', {courseId: _this.course.id})
+                                    }, 1000)
+                                })
+                            }
+                        })
+
+                    },
+
+                }
+            })
+        </script>
+
+    </div>
+
+  </body>
+</html>
+
+<script>
+
+</script>

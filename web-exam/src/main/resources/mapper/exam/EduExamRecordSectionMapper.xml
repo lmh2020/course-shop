@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.exam.mapper.EduExamRecordSectionMapper">
+
+    <update id="batchSaveEduExamRecordSection" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            INSERT INTO edu_exam_record_section (record_collect_id, exam_question_id) VALUES (#{item.recordCollectId}, #{item.examQuestionId})
+        </foreach>
+    </update>
+
+    <update id="batchUpdateEduExamRecordSection" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE edu_exam_record_section SET answer = #{item.answer}, score = #{item.score}, result = #{item.result.code}
+            WHERE record_collect_id = #{item.recordCollectId} AND exam_question_id = #{item.examQuestionId}
+        </foreach>
+    </update>
+
+</mapper>
